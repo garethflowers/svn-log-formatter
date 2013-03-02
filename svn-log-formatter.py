@@ -28,7 +28,6 @@ def query_svn(repoUrl, outputFile):
         print ('Error querying SVN Log')
         sys.exit(1)
 
-    #subprocess.check_output()
     print ('Querying SVN server...')
 
     out = s.communicate()[0]
