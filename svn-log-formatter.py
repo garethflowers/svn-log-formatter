@@ -1,55 +1,75 @@
 import subprocess
 import sys
+import argparse
 from datetime import datetime
 
 try:
-  import xml.etree.cElementTree as ElementTree
+    import xml.etree.cElementTree as ElementTree
 except ImportError:
-  import xml.etree.ElementTree
+    import xml.etree.ElementTree as ElementTree
 
+def main(argv):
+    parser = argparse.ArgumentParser(description='Generates a ChangeLog from an SVN Repository.')
+    parser.add_argument('url', help='URL of the SVN Repository')
+    parser.add_argument('output', help='Location of the Output file')
+    args = parser.parse_args()
 
-def init():
-  if sys.argv[1] == '':
-    print ('error')
-  else:
-    print ('ok')
+    query_svn(args.url, args.output)
 
+    sys.exit()
 
-def query_svn():
-  print (sys.argv[1])
-  print ('Connecting to SVN server...')
+def query_svn(repoUrl, outputFile):
+    print ('Connecting to SVN server...')
 
-  try:
-    s = subprocess.Popen( ['svn', 'log', '--xml', 'https://casper:8443/svn/crm/trunk/'], stdout = subprocess.PIPE )
-  except:
-    print ("Error querying SVN Log")
-    sys.exit(1)
+    try:
+        s = subprocess.Popen(['svn', 'log', '--xml', repoUrl],
+                              stdout=subprocess.PIPE)
+    except:
+        print ('Error querying SVN Log')
+        sys.exit(1)
 
-  print ('Querying SVN server...')
+    #subprocess.check_output()
+    print ('Querying SVN server...')
 
-  out, err = s.communicate()
+    out = s.communicate()[0]
+    s.stdout.close()
 
-  root = ElementTree.fromstring(out)
+    if s.returncode != 0:
+        print ('some error' + str(s.returncode))
 
-  f = open('workfile.txt', 'w+')
+    try:
+        root = ElementTree.fromstring(out)
+    except:
+        print ('No results from Repository')
+        sys.exit(1)
 
-  for elem in root:
-    rev = str(elem.attrib.get('revision'))
-    author = elem.find('author').text
-    msgs = elem.find('msg').text
-    date = elem.find('date').text
-    date = datetime.strptime(date, '%Y-%m-%dT%H:%M:%S.%fZ')
-    date = datetime.strftime(date, '%d-%m-%y')
-
-    f.write(rev.ljust(10))
-    f.write(date.ljust(10))
-    f.write(author.ljust(10))
-    f.write(msgs)
+    f = open(outputFile, 'w+')
+    f.write('Revision'.ljust(10))
+    f.write('Date'.ljust(10))
+    f.write('Author'.ljust(10))
+    f.write('Message'.ljust(10))
     f.write('\n')
 
-  f.close()
+    for elem in root:
+        msgs = elem.find('msg').text
+
+        if msgs.startswith('INTERNAL: '):
+            continue
+
+        rev = str(elem.attrib.get('revision'))
+        author = elem.find('author').text
+        date = elem.find('date').text
+        date = datetime.strptime(date, '%Y-%m-%dT%H:%M:%S.%fZ')
+        date = datetime.strftime(date, '%d-%m-%y')
+
+        f.write(rev.ljust(10))
+        f.write(date.ljust(10))
+        f.write(author.ljust(10))
+        f.write(msgs)
+        f.write('\n')
+
+    f.close()
 
 
 if __name__ == '__main__':
-  query_svn()
-  sys.exit(0)
+    main(sys.argv[1:])
