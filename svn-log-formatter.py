@@ -56,6 +56,7 @@ def query_svn(repoUrl, outputFile):
         if msgs.startswith('INTERNAL: '):
             continue
 
+        msgs = msgs.encode('utf-8')
         rev = str(elem.attrib.get('revision'))
         author = elem.find('author').text
         date = elem.find('date').text
