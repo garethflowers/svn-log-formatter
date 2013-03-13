@@ -10,7 +10,8 @@ except ImportError:
     import xml.etree.ElementTree as ElementTree
 
 def main(argv):
-    parser = argparse.ArgumentParser(description='Generates a ChangeLog from an SVN Repository.')
+    parser = argparse.ArgumentParser(
+        description='Generates a ChangeLog from an SVN Repository.')
     parser.add_argument('url', help='URL of the SVN Repository')
     parser.add_argument('output', help='Location of the Output file')
     args = parser.parse_args()
