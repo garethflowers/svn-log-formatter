@@ -53,7 +53,9 @@ def query_svn(repoUrl, outputFile):
     for elem in root:
         msgs = elem.find('msg').text
 
-        if msgs.startswith('INTERNAL: '):
+        if not msgs:
+            msgs = ''
+        elif msgs.startswith('INTERNAL: '):
             continue
 
         msgs = msgs.encode('utf-8')
