@@ -44,6 +44,8 @@ def query_svn(repoUrl, outputFile):
         print ('No results from Repository')
         sys.exit(1)
 
+    print ('Writing log to ' + outputFile + '...')
+
     f = open(outputFile, 'w+')
     f.write('Revision'.ljust(10))
     f.write('Date'.ljust(10))
