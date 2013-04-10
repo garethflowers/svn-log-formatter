@@ -1,4 +1,7 @@
-svn-log-formatter
-=================
+# SVN Log Formatter
 
-Outputs a plain text formatted SVN Repo log
+Creates a plain text formatted change-log from an SVN Repository.
+
+## Usage
+
+`svn-log-formatter.py [-h] url output`
