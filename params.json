@@ -1,1 +1,0 @@
-{"name":"Svn-log-formatter","tagline":"Outputs a plain text formatted SVN Repo log","body":"# SVN Log Formatter\r\n\r\nCreates a plain text formatted change-log from an SVN Repository.\r\n\r\n## Usage\r\n\r\n`svn-log-formatter.py [-h] url output`\r\n","google":"","note":"Don't delete this file! It's used internally to help with page regeneration."}
